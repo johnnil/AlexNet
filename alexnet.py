@@ -71,17 +71,18 @@ if __name__ == "__main__":
     model.summary()
     
     # Compile model
-    model.compile(optimizer='adam',
+    model.compile(optimizer='sgd',
               loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
     # Load data
-    (test_images, test_labels), (train_images, train_labels) = preprocessing.load_data()
+    (train_images, train_labels), (test_images, test_labels) = preprocessing.load_data()
 
     # Fit to data
-    history = model.fit(train_images, train_labels, epochs=10,
-                        steps_per_epoch=50000)
+    history = model.fit(train_images, train_labels, epochs=90,
+                        batch_size=128, validation_split=0.05)
 
+    # Plot results
     plt.plot(history.history['accuracy'], label='accuracy')
     plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
     plt.xlabel('Epoch')
