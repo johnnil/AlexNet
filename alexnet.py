@@ -15,7 +15,7 @@ def add_conv_layers(model, image_size):
     # Number of filters, kernels sizes, stride sizes and pooling sizes are the same as in report.
 
     # 1st convolutional layer
-    model.add(Conv2D(filters=96, input_shape=(image_size,image_size,3), kernel_size=(11,11), padding='valid', strides=(4,4), activation='relu', kernel_initializer=initializers.RandomNormal(stddev=0.01)))
+    model.add(Conv2D(filters=96, input_shape=(image_size,image_size,3), kernel_size=(11,11), padding='same', strides=(4,4), activation='relu', kernel_initializer=initializers.RandomNormal(stddev=0.01)))
     # Max pooling of 1st layer
     model.add(MaxPooling2D(pool_size=(3,3), strides= (2,2), padding='valid'))
 
@@ -33,36 +33,62 @@ def add_conv_layers(model, image_size):
     # 5th convolutional layer
     model.add(Conv2D(filters=256, kernel_size=(3,3), strides= 1, padding='same', activation='relu', kernel_initializer=initializers.RandomNormal(stddev=0.01)))
     # Max pooling of 5th layer
-    model.add(MaxPooling2D(pool_size=(3,3), strides= (2,2), padding='valid'))
+
+    if image_size != 32:
+        # if image size is smaller than this pooling is impossible
+        model.add(MaxPooling2D(pool_size=(3,3), strides= (2,2), padding='valid'))
 
 def add_fully_connected(model, dropout=False):
-    # 6th layer, "Unroll" 3D input to 1D
+    # "Unroll" 3D input to 1D
     model.add(Flatten())
 
+    # 6th layer (fully connected)
+    model.add(Dense(256, activation='relu'))
+    if dropout:
+        model.add(Dropout(0.4))
+
     # 7th layer (fully connected)
-    model.add(Dense(4096, input_shape=(224*224*3), activation='relu'))
+    model.add(layers.Dense(256, activation='relu'))
     if dropout:
         model.add(Dropout(0.4))
 
     # 8th layer (fully connected)
-    model.add(layers.Dense(4096, activation='relu'))
-    if dropout:
-        model.add(Dropout(0.4))
-
-    # 9th layer (fully connected)
     model.add(layers.Dense(10, activation='relu')) # number of classes = 10
     if dropout:
         model.add(Dropout(0.4))
 
-    # 10th layer (one output for each class)
+    # Softmax
     model.add(layers.Dense(10, activation='softmax'))
 
 
 
 
 if __name__ == "__main__":
-    (train_images, train_labels), (test_images, test_labels) = preprocessing.load_data()
-
+    # Build model
     model = Sequential()
-    add_conv_layers(model, 256)
+    add_conv_layers(model, 32)
+    add_fully_connected(model)
     model.summary()
+    
+    # Compile model
+    model.compile(optimizer='adam',
+              loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+
+    # Load data
+    (test_images, test_labels), (train_images, train_labels) = preprocessing.load_data()
+
+    # Fit to data
+    history = model.fit(train_images, train_labels, epochs=10,
+                        steps_per_epoch=50000)
+
+    plt.plot(history.history['accuracy'], label='accuracy')
+    plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.ylim([0.5, 1])
+    plt.legend(loc='lower right')
+
+    test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
+
+    print(test_acc)
