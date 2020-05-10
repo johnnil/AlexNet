@@ -71,7 +71,7 @@ if __name__ == "__main__":
     model.summary()
     
     # Compile model
-    model.compile(optimizer='sgd',
+    model.compile(optimizer='adam',
               loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
@@ -79,16 +79,16 @@ if __name__ == "__main__":
     (train_images, train_labels), (test_images, test_labels) = preprocessing.load_data()
 
     # Fit to data
-    history = model.fit(train_images, train_labels, epochs=90,
+    history = model.fit(train_images, train_labels, epochs=10,
                         batch_size=128, validation_split=0.05)
 
-    # Plot results
-    plt.plot(history.history['accuracy'], label='accuracy')
-    plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
-    plt.xlabel('Epoch')
-    plt.ylabel('Accuracy')
-    plt.ylim([0.5, 1])
-    plt.legend(loc='lower right')
+    # # Plot results
+    # plt.plot(history.history['accuracy'], label='accuracy')
+    # plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
+    # plt.xlabel('Epoch')
+    # plt.ylabel('Accuracy')
+    # plt.ylim([0.5, 1])
+    # plt.legend(loc='lower right')
 
     test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
 
