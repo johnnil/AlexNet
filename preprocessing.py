@@ -10,6 +10,27 @@ def LoadBatch(filename):
 		dict = pickle.load(fo, encoding='bytes')
 	return dict
 
+def verify_data(images, labels):
+    class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer',
+               'dog', 'frog', 'horse', 'ship', 'truck']
+
+    plt.figure(figsize=(10,10))
+    for i in range(25):
+        plt.subplot(5,5,i+1)
+        plt.xticks([])
+        plt.yticks([])
+        plt.grid(False)
+        plt.imshow(images[i], cmap=plt.cm.binary)
+        # The CIFAR labels happen to be arrays, 
+        # which is why you need the extra index
+        plt.xlabel(class_names[labels[i]])
+    plt.show()
+
+def one_hot(labels):
+    one_hot = np.zeros((labels.size, labels.max() + 1))
+    one_hot[np.arange(labels.size), labels] = 1
+    return one_hot
+
 
 def load_data(upscaled=False):
     upscaled = 'upscaled_' if upscaled else ''
@@ -25,12 +46,12 @@ def load_data(upscaled=False):
 
     # Load test data
     test = LoadBatch(f'{upscaled}test_batch')
-    test_images = test.get(b'data')
-    test_labels = test.get(b'labels')
+    test_images = np.array(test.get(b'data'))
+    test_labels = np.array(test.get(b'labels'))
 
     # Center data
-    train_images = train_images / 255
-    test_images = test_images / 255
+    train_images = train_images / 255.0
+    test_images = test_images / 255.0
 
     # Reshape data
     train_images = train_images.reshape(len(train_images), 3, size, size).transpose(0, 2, 3, 1)
@@ -38,4 +59,5 @@ def load_data(upscaled=False):
 
     return (train_images, train_labels), (test_images, test_labels)
 
-load_data()
+if __name__ == "__main__":
+    load_data()
