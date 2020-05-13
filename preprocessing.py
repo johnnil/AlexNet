@@ -25,10 +25,3 @@ def verify_data(images, labels):
         # which is why you need the extra index
         plt.xlabel(class_names[labels[i][0]])
     plt.show()
-
-def flip_data(images):
-    # Flips images vertically
-    return images[:, :, ::-1, :].copy()
-
-if __name__ == "__main__":
-    pass
