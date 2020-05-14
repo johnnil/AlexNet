@@ -21,7 +21,7 @@ def add_conv_layers(model, image_size):
     # ReLU
     model.add(ReLU())
     # Max pooling of 1st layer
-    model.add(MaxPooling2D(pool_size=(3,3), strides= (2,2), padding='valid'))
+    model.add(MaxPooling2D(pool_size=(2,2), padding='valid'))
 
     # 2nd convolutional layer
     model.add(Conv2D(filters=128, kernel_size=(3,3), padding='same', kernel_initializer=initializers.RandomNormal(stddev=0.01)))
@@ -30,7 +30,7 @@ def add_conv_layers(model, image_size):
     # ReLU
     model.add(ReLU())
     # Max pooling of 2nd layer
-    model.add(MaxPooling2D(pool_size=(3,3), strides=(2,2), padding='valid'))
+    model.add(MaxPooling2D(pool_size=(2,2), padding='valid'))
 
     # 3rd convolutional layer
     model.add(Conv2D(filters=128, kernel_size=(3,3), padding='same', kernel_initializer=initializers.RandomNormal(stddev=0.01)))
@@ -55,7 +55,7 @@ def add_conv_layers(model, image_size):
     
     # Max pooling of 5th layer
     # if image size is smaller than this pooling is impossible
-    model.add(MaxPooling2D(pool_size=(3,3), strides= (2,2), padding='valid'))
+    model.add(MaxPooling2D(pool_size=(2,2), padding='valid'))
 
 def add_fully_connected(model):
     # "Unroll" 3D input to 1D
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     preprocessing.verify_data(train_images, train_labels)
 
     # Fit to data
-    history = model.fit(train_images, train_labels, epochs=90,
+    history = model.fit(train_images, train_labels, epochs=20,
                         batch_size=32, validation_data=(test_images, test_labels))
 
     test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
