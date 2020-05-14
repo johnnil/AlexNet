@@ -15,7 +15,7 @@ def add_conv_layers(model, image_size):
     # Number of filters, kernels sizes, stride sizes and pooling sizes are the same as in report.
 
     # 1st convolutional layer
-    model.add(Conv2D(filters=64, input_shape=(image_size,image_size,3), kernel_size=(3,3), padding='same', kernel_initializer=initializers.RandomNormal(stddev=0.01)))
+    model.add(Conv2D(filters=64, input_shape=(image_size,image_size,3), kernel_size=(3,3), padding='same'))
     # Batch normalisation before ReLU as done in SimpleNet
     model.add(BatchNormalization(momentum=0.95))
     # ReLU
@@ -24,7 +24,7 @@ def add_conv_layers(model, image_size):
     model.add(MaxPooling2D(pool_size=(2,2), padding='valid'))
 
     # 2nd convolutional layer
-    model.add(Conv2D(filters=128, kernel_size=(3,3), padding='same', kernel_initializer=initializers.RandomNormal(stddev=0.01)))
+    model.add(Conv2D(filters=128, kernel_size=(3,3), padding='same'))
     # Batch normalisation before ReLU as done in SimpleNet
     model.add(BatchNormalization(momentum=0.95))
     # ReLU
@@ -33,21 +33,21 @@ def add_conv_layers(model, image_size):
     model.add(MaxPooling2D(pool_size=(2,2), padding='valid'))
 
     # 3rd convolutional layer
-    model.add(Conv2D(filters=128, kernel_size=(3,3), padding='same', kernel_initializer=initializers.RandomNormal(stddev=0.01)))
+    model.add(Conv2D(filters=128, kernel_size=(3,3), padding='same'))
     # Batch normalisation before ReLU as done in SimpleNet
     model.add(BatchNormalization(momentum=0.95))
     # ReLU
     model.add(ReLU())
 
     # 4th convolutional layer
-    model.add(Conv2D(filters=128, kernel_size=(3,3), padding='same', kernel_initializer=initializers.RandomNormal(stddev=0.01)))
+    model.add(Conv2D(filters=256, kernel_size=(3,3), padding='same'))
     # Batch normalisation before ReLU as done in SimpleNet
     model.add(BatchNormalization(momentum=0.95))
     # ReLU
     model.add(ReLU())
 
     # 5th convolutional layer
-    model.add(Conv2D(filters=128, kernel_size=(3,3), padding='same', kernel_initializer=initializers.RandomNormal(stddev=0.01)))
+    model.add(Conv2D(filters=256, kernel_size=(3,3), padding='same'))
     # Batch normalisation before ReLU as done in SimpleNet
     model.add(BatchNormalization(momentum=0.95))
     # ReLU
@@ -100,8 +100,8 @@ if __name__ == "__main__":
     train_labels = np.vstack((train_labels, train_labels))
 
     # Verify data
-    preprocessing.verify_data(flipped_images, train_labels)
-    preprocessing.verify_data(train_images, train_labels)
+    # preprocessing.verify_data(flipped_images, train_labels)
+    # preprocessing.verify_data(train_images, train_labels)
 
     # Fit to data
     history = model.fit(train_images, train_labels, epochs=20,
